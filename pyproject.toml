@@ -1,0 +1,31 @@
+[project]
+name = "mpt-batch"
+version = "0.1.0"
+description = "Batch video generator for MoneyPrinterTurbo — define jobs in YAML, generate unattended, resume safely"
+requires-python = ">=3.10"
+dependencies = [
+    "python-dotenv>=1.0",
+    "pyyaml>=6.0",
+    "requests>=2.31",
+]
+
+[project.scripts]
+batch = "mpt_batch.batch:main"
+
+[project.urls]
+Repository = "https://github.com/korosu/mpt-batch"
+Issues = "https://github.com/korosu/mpt-batch/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mpt_batch"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

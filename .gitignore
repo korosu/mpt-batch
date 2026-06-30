@@ -1,0 +1,27 @@
+.env
+config.yaml
+
+# your actual jobs (topics are private) — copy from jobs.example.yaml
+jobs.yaml
+jobs_*.yaml
+!jobs.example.yaml
+
+# dedup registry — generated at runtime, contains personal video history
+seen.txt
+seen_*.txt
+
+# generated output
+exports/
+logs/
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+.DS_Store
+*.log
+.idea/
+
+# generated video files (can be large)
+*.mp4

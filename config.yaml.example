@@ -1,0 +1,43 @@
+# ============================================================
+# mpt-batch configuration
+# Telegram credentials go in .env — not here.
+#
+# Copy this file to config.yaml and edit to your needs.
+# config.yaml is gitignored so your changes won't be overwritten by git pull.
+# ============================================================
+
+# MoneyPrinterTurbo API endpoint
+api_url: "http://127.0.0.1:8080"
+
+# Path to MoneyPrinterTurbo's storage directory (contains tasks/, cache_videos/)
+mpt_storage: "/root/MoneyPrinterTurbo/storage"
+
+# Where finished videos and script.json files are saved.
+# Relative paths are resolved against this config.yaml's location.
+output_dir: "./exports"
+
+# Deduplication registry — one output_file name per line, append-only.
+# A video is marked seen only after it's fully copied to output_dir,
+# so a crash mid-run never loses or duplicates progress.
+seen_file: "./seen.txt"
+
+# Logging
+log_file: "./logs/batch.log"
+log_max_mb: 10
+
+# Task timeouts
+max_wait_seconds: 2400        # give up waiting for a single task after this long
+stuck_threshold_seconds: 3600 # give up if progress doesn't move for this long
+
+# Retry behaviour
+max_retries: 3
+retry_delay_seconds: 180
+max_consecutive_failures: 3   # abort the whole batch after this many in a row
+                               # (usually means the API or token is broken)
+
+# Clean MoneyPrinterTurbo's cache_videos/ every N successfully generated videos
+cache_cleanup_interval: 6
+
+# Prefix shown in every Telegram alert: "[mpt-batch] Batch done"
+# Token and chat_id go in .env (see .env.example) — leave them empty to disable.
+telegram_prefix: "mpt-batch"
