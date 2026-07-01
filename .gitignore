@@ -6,6 +6,10 @@ jobs.yaml
 jobs_*.yaml
 !jobs.example.yaml
 
+# your voice presets — copy from voices.example.yaml
+voices.yaml
+!voices.example.yaml
+
 # dedup registry — generated at runtime, contains personal video history
 seen.txt
 seen_*.txt

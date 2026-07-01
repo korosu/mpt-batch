@@ -16,6 +16,11 @@ mpt_storage: "/root/MoneyPrinterTurbo/storage"
 # Relative paths are resolved against this config.yaml's location.
 output_dir: "./exports"
 
+# Named voice presets (optional). See voices.example.yaml — copy it to
+# voices.yaml and reference presets in jobs.yaml as `voice: "alias"`.
+# Safe to leave pointing at a file that doesn't exist; presets are opt-in.
+voices_file: "./voices.yaml"
+
 # Deduplication registry — one output_file name per line, append-only.
 # A video is marked seen only after it's fully copied to output_dir,
 # so a crash mid-run never loses or duplicates progress.
@@ -35,7 +40,13 @@ retry_delay_seconds: 180
 max_consecutive_failures: 3   # abort the whole batch after this many in a row
                                # (usually means the API or token is broken)
 
-# Clean MoneyPrinterTurbo's cache_videos/ every N successfully generated videos
+# Cache cleanup — mpt-batch can clear MoneyPrinterTurbo's cache_videos/
+# folder to free disk space. Cleanup always runs once at the end of a batch
+# (when enabled); cache_cleanup_interval additionally triggers it every N
+# successful videos during a long run. Set cache_cleanup_interval to 0 to
+# only clean at the very end, or cache_cleanup_enabled to false to never
+# touch cache_videos/ at all.
+cache_cleanup_enabled: true
 cache_cleanup_interval: 6
 
 # Prefix shown in every Telegram alert: "[mpt-batch] Batch done"
