@@ -53,44 +53,44 @@ telegram_prefix: "mpt-batch"
 # ============================================================
 # Voice presets
 #
-# MoneyPrinterTurbo selects the TTS engine via a `tts_server` field, and
-# `voice_name` itself encodes the provider as a "provider:voice" prefix
-# (e.g. "gemini:puck"). Each preset below sets BOTH fields together so they
-# can never drift out of sync — reference one by name in jobs.yaml:
+# MoneyPrinterTurbo selects the voice purely from the shape of `voice_name`
+# (a "provider:voice" prefix like "gemini:puck" for paid providers, or a
+# plain Edge TTS voice ID like "es-ES-ElviraNeural" for the free default).
+# `tts_server` is just kept alongside for readability.
+#
+# You do NOT need to list Edge TTS voices here — all 314 of them (every
+# language) are built in automatically. Browse/search them with:
+#
+#   uv run batch --list-voices es       # all Spanish variants
+#   uv run batch --list-voices gemini   # your presets below
+#
+# Then reference any alias directly in jobs.yaml, no setup needed:
 #
 #   defaults:
-#     voice: "gemini_puck"
+#     voice: "es_es_elvira"   # es-ES-ElviraNeural (Female)
 #
-# The top-level keys (gtts, gemini, ...) are just for readability — alias
-# names must be unique across the whole section. Add, rename, or remove
-# presets freely; this ships with a working set so voices work out of the
-# box without any extra setup.
+# The `voices:` section below is only for EXTRA presets on top of the
+# bundled ones — paid providers, or an Edge voice with a custom rate/volume.
+# Each preset sets BOTH tts_server and voice_name together so they can't
+# drift out of sync. The top-level keys (gemini, ...) are just for
+# readability — alias names must be unique across the whole section, and
+# override a bundled alias of the same name if one exists.
 #
 # Paid providers (gemini, ...) need their own API key configured on the
 # MoneyPrinterTurbo SERVER itself — mpt-batch has no control over that part.
-# If your MoneyPrinterTurbo fork supports other providers (edge, azure,
-# siliconflow, ...), check its voice.py for the tts_server value and
-# voice_name prefix it expects, then add a section here the same way.
+# If your MoneyPrinterTurbo fork supports other providers (siliconflow,
+# mimo, elevenlabs, azure v2, ...), check its voice.py for the voice_name
+# shape it expects, then add a section here the same way.
 # ============================================================
 voices:
-  # gTTS — Google Translate TTS. Free, no API key. No named voice personas,
-  # just a language code (it picks one standard voice per language).
-  gtts:
-    gtts_en:
-      tts_server: "gtts"
-      voice_name: "gtts:en"
-    gtts_es:
-      tts_server: "gtts"
-      voice_name: "gtts:es"
-    gtts_fr:
-      tts_server: "gtts"
-      voice_name: "gtts:fr"
-    gtts_de:
-      tts_server: "gtts"
-      voice_name: "gtts:de"
-    gtts_pt:
-      tts_server: "gtts"
-      voice_name: "gtts:pt"
+  # Example: the same bundled Edge TTS voice, but slower — useful for a
+  # denser script or a calmer tone. Redefining "es_es_elvira" here overrides
+  # the bundled default of the same name.
+  # edge_overrides:
+  #   es_es_elvira:
+  #     tts_server: "edge"
+  #     voice_name: "es-ES-ElviraNeural-Female"
+  #     voice_rate: 0.9
 
   # Gemini TTS — paid, requires a Gemini API key configured on the
   # MoneyPrinterTurbo server. Full voice list (30 voices):
