@@ -16,11 +16,6 @@ mpt_storage: "/root/MoneyPrinterTurbo/storage"
 # Relative paths are resolved against this config.yaml's location.
 output_dir: "./exports"
 
-# Named voice presets (optional). See voices.example.yaml — copy it to
-# voices.yaml and reference presets in jobs.yaml as `voice: "alias"`.
-# Safe to leave pointing at a file that doesn't exist; presets are opt-in.
-voices_file: "./voices.yaml"
-
 # Deduplication registry — one output_file name per line, append-only.
 # A video is marked seen only after it's fully copied to output_dir,
 # so a crash mid-run never loses or duplicates progress.
@@ -34,7 +29,9 @@ log_max_mb: 10
 max_wait_seconds: 2400        # give up waiting for a single task after this long
 stuck_threshold_seconds: 3600 # give up if progress doesn't move for this long
 
-# Retry behaviour
+# Retry behaviour — for transient failures (dropped connection, MPT briefly
+# unavailable, a one-off broken/stuck task). Won't help with a persistent
+# problem like bad credentials; max_consecutive_failures below handles that.
 max_retries: 3
 retry_delay_seconds: 180
 max_consecutive_failures: 3   # abort the whole batch after this many in a row
@@ -52,3 +49,76 @@ cache_cleanup_interval: 6
 # Prefix shown in every Telegram alert: "[mpt-batch] Batch done"
 # Token and chat_id go in .env (see .env.example) — leave them empty to disable.
 telegram_prefix: "mpt-batch"
+
+# ============================================================
+# Voice presets
+#
+# MoneyPrinterTurbo selects the TTS engine via a `tts_server` field, and
+# `voice_name` itself encodes the provider as a "provider:voice" prefix
+# (e.g. "gemini:puck"). Each preset below sets BOTH fields together so they
+# can never drift out of sync — reference one by name in jobs.yaml:
+#
+#   defaults:
+#     voice: "gemini_puck"
+#
+# The top-level keys (gtts, gemini, ...) are just for readability — alias
+# names must be unique across the whole section. Add, rename, or remove
+# presets freely; this ships with a working set so voices work out of the
+# box without any extra setup.
+#
+# Paid providers (gemini, ...) need their own API key configured on the
+# MoneyPrinterTurbo SERVER itself — mpt-batch has no control over that part.
+# If your MoneyPrinterTurbo fork supports other providers (edge, azure,
+# siliconflow, ...), check its voice.py for the tts_server value and
+# voice_name prefix it expects, then add a section here the same way.
+# ============================================================
+voices:
+  # gTTS — Google Translate TTS. Free, no API key. No named voice personas,
+  # just a language code (it picks one standard voice per language).
+  gtts:
+    gtts_en:
+      tts_server: "gtts"
+      voice_name: "gtts:en"
+    gtts_es:
+      tts_server: "gtts"
+      voice_name: "gtts:es"
+    gtts_fr:
+      tts_server: "gtts"
+      voice_name: "gtts:fr"
+    gtts_de:
+      tts_server: "gtts"
+      voice_name: "gtts:de"
+    gtts_pt:
+      tts_server: "gtts"
+      voice_name: "gtts:pt"
+
+  # Gemini TTS — paid, requires a Gemini API key configured on the
+  # MoneyPrinterTurbo server. Full voice list (30 voices):
+  # https://ai.google.dev/gemini-api/docs/speech-generation
+  gemini:
+    gemini_puck:
+      tts_server: "gemini"
+      voice_name: "gemini:puck"
+    gemini_aoede:
+      tts_server: "gemini"
+      voice_name: "gemini:aoede"
+    gemini_kore:
+      tts_server: "gemini"
+      voice_name: "gemini:kore"
+    gemini_charon:
+      tts_server: "gemini"
+      voice_name: "gemini:charon"
+    gemini_fenrir:
+      tts_server: "gemini"
+      voice_name: "gemini:fenrir"
+    gemini_leda:
+      tts_server: "gemini"
+      voice_name: "gemini:leda"
+
+  # voice_rate / voice_volume can be part of a preset too, if a particular
+  # voice sounds best at a non-default pace or level:
+  # gemini_aoede_fast:
+  #   tts_server: "gemini"
+  #   voice_name: "gemini:aoede"
+  #   voice_rate: 1.3
+  #   voice_volume: 1
