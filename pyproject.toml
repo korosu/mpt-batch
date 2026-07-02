@@ -1,6 +1,6 @@
 [project]
 name = "mpt-batch"
-version = "0.1.0"
+version = "1.0.0"
 description = "Batch video generator for MoneyPrinterTurbo — define jobs in YAML, generate unattended, resume safely"
 requires-python = ">=3.10"
 dependencies = [
