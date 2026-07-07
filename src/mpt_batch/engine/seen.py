@@ -13,27 +13,17 @@ implements the same three functions: load / add / list_all.
 
 from __future__ import annotations
 
+from functools import lru_cache
 from pathlib import Path
 
-# In-memory cache keyed by resolved file path string, avoids re-reading the
-# file on every contains() check within a single run.
-_cache: dict[str, set[str]] = {}
 
-
-def _key(path: Path) -> str:
-    return str(path)
-
-
+@lru_cache(maxsize=None)
 def load(path: Path) -> set[str]:
-    """Return the full set of known output_file names. Uses cache."""
-    k = _key(path)
-    if k not in _cache:
-        if not path.exists():
-            _cache[k] = set()
-        else:
-            lines = path.read_text(encoding="utf-8").splitlines()
-            _cache[k] = {line.strip() for line in lines if line.strip()}
-    return _cache[k]
+    """Return the full set of known output_file names. Cached per path."""
+    if not path.exists():
+        return set()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    return {line.strip() for line in lines if line.strip()}
 
 
 def contains(path: Path, output_file: str) -> bool:
@@ -42,11 +32,11 @@ def contains(path: Path, output_file: str) -> bool:
 
 def add(path: Path, output_file: str) -> None:
     """Append output_file to the seen file. Idempotent."""
-    existing = load(path)
-    if output_file in existing:
+    seen_set = load(path)
+    if output_file in seen_set:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    _cache[_key(path)].add(output_file)
+    seen_set.add(output_file)  # Mutate the cached set
     with open(path, "a", encoding="utf-8") as f:
         f.write(f"{output_file}\n")
 
