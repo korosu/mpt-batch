@@ -13,11 +13,11 @@ implements the same three functions: load / add / list_all.
 
 from __future__ import annotations
 
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 
 
-@lru_cache(maxsize=None)
+@cache
 def load(path: Path) -> set[str]:
     """Return the full set of known output_file names. Cached per path."""
     if not path.exists():
