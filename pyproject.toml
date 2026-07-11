@@ -28,9 +28,15 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I"]
+select = ["E", "F", "W", "I", "UP"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.10"
+typeCheckingMode = "basic"
 
 [dependency-groups]
 dev = [
     "ruff>=0.15.20",
+    "pytest>=8.0",
 ]
