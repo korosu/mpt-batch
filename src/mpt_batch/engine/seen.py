@@ -13,17 +13,20 @@ implements the same three functions: load / add / list_all.
 
 from __future__ import annotations
 
-from functools import cache
 from pathlib import Path
 
+_cache: dict[Path, set[str]] = {}
 
-@cache
+
 def load(path: Path) -> set[str]:
     """Return the full set of known output_file names. Cached per path."""
-    if not path.exists():
-        return set()
-    lines = path.read_text(encoding="utf-8").splitlines()
-    return {line.strip() for line in lines if line.strip()}
+    if path not in _cache:
+        if not path.exists():
+            _cache[path] = set()
+        else:
+            lines = path.read_text(encoding="utf-8").splitlines()
+            _cache[path] = {line.strip() for line in lines if line.strip()}
+    return _cache[path]
 
 
 def contains(path: Path, output_file: str) -> bool:
@@ -36,7 +39,7 @@ def add(path: Path, output_file: str) -> None:
     if output_file in seen_set:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
-    seen_set.add(output_file)  # Mutate the cached set
+    seen_set.add(output_file)
     with open(path, "a", encoding="utf-8") as f:
         f.write(f"{output_file}\n")
 
