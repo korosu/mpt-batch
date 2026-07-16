@@ -51,6 +51,33 @@ cache_cleanup_interval: 6
 telegram_prefix: "mpt-batch"
 
 # ============================================================
+# Language profiles (optional)
+#
+# Define per-language file suffixes for multi-language setups.
+# When --lang CODE is passed, the suffix is appended to paths:
+#   jobs.yaml → jobs_{suffix}.yaml (or jobs.yaml when suffix is "")
+#   seen.txt → seen_{suffix}.txt
+#   exports/ → exports{suffix}/
+#
+# Leave this whole section out (or empty) to keep current behavior
+# where --jobs and --seen are managed manually.
+# ============================================================
+# langs:
+#   en:
+#     file_suffix: ""      # empty = no suffix, bare filenames
+#   es:
+#     file_suffix: "_es"   # → jobs_es.yaml, seen_es.txt, exports_es/
+
+# ============================================================
+# Default jobs directory (optional)
+#
+# When set, --jobs defaults to this directory instead of the
+# current working directory. Relative paths resolve against this
+# config.yaml's location.
+# ============================================================
+# jobs_dir: "./jobs"
+
+# ============================================================
 # Voice presets
 #
 # MoneyPrinterTurbo selects the voice purely from the shape of `voice_name`
