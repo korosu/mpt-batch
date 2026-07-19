@@ -69,11 +69,20 @@ telegram_prefix: "mpt-batch"
 #     file_suffix: "_es"   # → jobs_es.yaml, seen_es.txt, exports_es/
 
 # ============================================================
+# Jobs file (optional)
+#
+# Direct path to the jobs YAML file. When set, --jobs defaults to this
+# path directly, overriding --lang suffix and jobs_dir fallback.
+# Relative paths resolve against this config.yaml's location.
+# ============================================================
+# jobs: "./jobs_prod.yaml"
+
+# ============================================================
 # Default jobs directory (optional)
 #
 # When set, --jobs defaults to this directory instead of the
 # current working directory. Relative paths resolve against this
-# config.yaml's location.
+# config.yaml's location. Ignored if `jobs:` is set above.
 # ============================================================
 # jobs_dir: "./jobs"
 
